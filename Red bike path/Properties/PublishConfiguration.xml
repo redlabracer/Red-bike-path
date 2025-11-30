@@ -2,36 +2,170 @@
 	<!--Id must be set in order to update existed mod. it is not required for publishing mod for the first time-->
 	<ModId Value="" />
 	<!--Name of the mod to display to players-->
-	<DisplayName Value="Red_bike_path" />
+	<DisplayName Value="Colored bike path (CBP)" />
 	<!--Short description of the mod-->
-	<ShortDescription Value="This is a short description" />
+	<ShortDescription Value="Change bike path and bike lane colors with multiple presets and intensity control. Separate settings for mixed paths and pedestrian areas." />
 	<!--Long description of the mod. Single line or multi line. Supports minimal markdown subset-->
-	<!--LongDescription Value="This is a long description" /-->
 	<LongDescription>
-This is a long description
+# Red Bike Path - Customizable Bike Lane Colors
+
+Transform your city's cycling infrastructure with customizable bike path colors! This mod allows you to change the surface color of bike paths, bike lanes, and cycle ways from the default green to various colors including red, blue, purple, orange, and more.
+
+## ✨ Features
+
+### 🎨 Multiple Color Presets
+- **Red** - High visibility for urban areas
+- **Blue** - Modern and calming aesthetic
+- **Purple** - Unique and distinctive
+- **Orange** - Warm and inviting
+- **Yellow** - Maximum visibility
+- **Pink** - Playful and modern
+- **Brown** - Natural and understated
+- **White** - Clean and minimal
+- **Black** - Sleek and professional
+- **Green** - Return to default
+
+### ⚙️ Advanced Settings
+- **Color Intensity Slider** - Fine-tune the color strength (0-100%)
+- **Only Bike Lanes Mode** - Skip mixed bike+pedestrian paths to avoid coloring pedestrian areas
+- **Color Mixed Paths Option** - Choose whether to color shared bike/pedestrian surfaces
+- **Separate Pedestrian Control** - Keep pedestrian walkways in their original color
+
+### 🛣️ What Gets Colored
+- Dedicated bike lanes on roads
+- Separated bike paths
+- Cycle way surfaces
+- Optional: Mixed bike/pedestrian paths (configurable)
+
+### 🚫 What Stays Original
+- Pure pedestrian sidewalks (always)
+- Mixed paths (when disabled in settings)
+- Road surfaces
+- Buildings and other infrastructure
+
+## 🎮 How to Use
+
+1. **Enable the mod** in the game's mod manager
+2. **Load or start a city** - colors apply automatically
+3. **Customize settings** via Options → Mod Settings → Red Bike Path
+   - Choose your preferred color preset
+   - Adjust intensity for subtle or bold effects
+   - Toggle mixed path coloring as desired
+4. **Changes apply in real-time** - no restart needed for color changes!
+
+## ⚙️ Configuration Options
+
+### Color Preset
+Select from 10 different color options to match your city's theme
+
+### Color Intensity
+Adjust from 0% (no change) to 100% (full saturation) for perfect customization
+
+### Only Bike Lanes (Skip Mixed Paths)
+When enabled, skips mixed bike+pedestrian paths to avoid coloring pedestrian areas. May also skip some pure bike paths due to naming patterns.
+
+### Color Mixed Bike+Pedestrian Paths
+When enabled, colors mixed paths where bikes and pedestrians share the same surface.
+**⚠️ Warning:** This will also color the pedestrian areas since the game uses one material for the entire mixed path.
+
+## 🔧 Technical Details
+
+- Works by modifying material colors at runtime
+- No permanent changes to game files
+- Compatible with most other mods
+- Minimal performance impact
+- Automatically updates when settings change
+
+## 🐛 Known Limitations
+
+- Mixed bike/pedestrian paths use a single material, so the entire path (including pedestrian areas) gets colored when enabled
+- Some bike paths may not be detected if they use non-standard naming
+- Color changes may take a few seconds to apply after game load
+
+## 🆘 Troubleshooting
+
+**Colors not applying?**
+- Wait a few seconds after loading the city
+- Check that the mod is enabled in the mod manager
+- Verify color intensity is above 0%
+- Try switching to a different color preset and back
+
+**Pedestrian areas getting colored?**
+- Disable "Color Mixed Bike+Pedestrian Paths" in settings
+- Enable "Only Bike Lanes" for maximum filtering
+
+**Performance issues?**
+- Reduce color intensity
+- Disable mixed path coloring
+
+
+## 🌍 Localization
+
+Currently supports:
+- **English** (en-US)
+- **German** (de-DE)
+
+Want to help translate? Contact me via GitHub!
+
+## 🔗 Links & Support
+
+Found a bug? Have a suggestion? Want to contribute?
+Visit the GitHub repository to report issues, request features, or contribute to development.
+
+## 📜 License & Credits
+
+This mod is open source and available on GitHub.
+Feel free to contribute, fork, or report issues!
+
+**Compatibility:** Cities: Skylines II v1.4.x and newer
+
+---
+
+
 	</LongDescription>
 	<!--Thumbnail-->
 	<Thumbnail Value="Properties/Thumbnail.png" />
 	<!--Screenshot, can be set multiple times-->
 	<Screenshot Value="" />
 	<!--Tag, can be set multiple times-->
-	<Tag Value="" />
+	<Tag Value="Code Mod" />
 	<!--Link to the forum post where the mod can be discussed-->
-	<ForumLink Value="" />
+	<ForumLink Value="https://forum.paradoxplaza.com/forum/threads/colored-bike-path-cbp.1883408/" />
 	<!--Version of the mod-->
-	<ModVersion Value="1.0" />
+	<ModVersion Value="1.0.0" />
 	<!--Recommended version of the base game to use the mod-->
-	<GameVersion Value="1.0.*" />
+	<GameVersion Value="1.4.*" />
 	<!--Dependency for the mod, can be set multiple times-->
-	<Dependency Id="" />
+	<!--No dependencies required-->
 	<!--Required DLC, can be set multiple times. Supported values are "Landmark Buildings", "San Fransisco Set", "Beach Properties", "Urban Promenades", "Modern Architecture"-->
-	<RequiredDLC Value="" />
+	<!--No DLC required-->
 	<!--Change log for new version. Single line or multi line. Supports minimal markdown subset-->
-	<ChangeLog Value="" />
-	<!--<ChangeLog>
-	</ChangeLog>-->
+	<ChangeLog>
+## Version 1.0.0 - Initial Release
+
+### Features
+- 🎨 10 color presets for bike paths and lanes
+- 🎚️ Adjustable color intensity (0-100%)
+- ⚙️ Advanced filtering options
+- 🌍 English and German localization
+- 🔄 Real-time color updates
+- 🎯 Separate controls for mixed paths
+
+### What's New
+- Complete rewrite of color system
+- Added mixed path detection and control
+- Improved material detection
+- Enhanced logging for troubleshooting
+- Automatic copy to mods folder after build
+
+### Coming Soon
+- More color presets
+- Per-district color customization
+- Better mixed path handling
+- Additional language support
+	</ChangeLog>
 	<!--External link, can be set multiple times. supported types are "discord", "github", "youtube", "twitch", "x", "paypal", "patreon", "buymeacoffee", "kofi", "crowdin", "gitlab", "gofundme"-->
-	<ExternalLink Type="" Url="" />
+	<ExternalLink Type="github" Url="https://github.com/redlabracer/Red-bike-path" />
 	<!--Supported values Public, Private, Unlisted-->
 	<AccessLevel Value="Public" />
 </Publish>

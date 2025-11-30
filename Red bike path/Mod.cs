@@ -1,10 +1,9 @@
 ﻿using Colossal.IO.AssetDatabase;
 using Colossal.Logging;
 using Game;
-using Game.Input;
 using Game.Modding;
 using Game.SceneFlow;
-using UnityEngine;
+using Red_bike_path.Systems;
 
 namespace Red_bike_path
 {
@@ -12,13 +11,9 @@ namespace Red_bike_path
     {
         public static ILog log = LogManager.GetLogger($"{nameof(Red_bike_path)}.{nameof(Mod)}").SetShowsErrorsInUI(false);
         private Setting m_Setting;
-        public static ProxyAction m_ButtonAction;
-        public static ProxyAction m_AxisAction;
-        public static ProxyAction m_VectorAction;
-
-        public const string kButtonActionName = "ButtonBinding";
-        public const string kAxisActionName = "FloatBinding";
-        public const string kVectorActionName = "Vector2Binding";
+        
+        // Statische Referenz für Zugriff aus Systemen
+        public static Setting Settings { get; private set; }
 
         public void OnLoad(UpdateSystem updateSystem)
         {
@@ -30,22 +25,36 @@ namespace Red_bike_path
             m_Setting = new Setting(this);
             m_Setting.RegisterInOptionsUI();
             GameManager.instance.localizationManager.AddSource("en-US", new LocaleEN(m_Setting));
-
-            m_Setting.RegisterKeyBindings();
-
-            m_ButtonAction = m_Setting.GetAction(kButtonActionName);
-            m_AxisAction = m_Setting.GetAction(kAxisActionName);
-            m_VectorAction = m_Setting.GetAction(kVectorActionName);
-
-            m_ButtonAction.shouldBeEnabled = true;
-            m_AxisAction.shouldBeEnabled = true;
-            m_VectorAction.shouldBeEnabled = true;
-
-            m_ButtonAction.onInteraction += (_, phase) => log.Info($"[{m_ButtonAction.name}] On{phase} {m_ButtonAction.ReadValue<float>()}");
-            m_AxisAction.onInteraction += (_, phase) => log.Info($"[{m_AxisAction.name}] On{phase} {m_AxisAction.ReadValue<float>()}");
-            m_VectorAction.onInteraction += (_, phase) => log.Info($"[{m_VectorAction.name}] On{phase} {m_VectorAction.ReadValue<Vector2>()}");
+            GameManager.instance.localizationManager.AddSource("de-DE", new LocaleDE(m_Setting));
 
             AssetDatabase.global.LoadSettings(nameof(Red_bike_path), m_Setting, new Setting(this));
+            
+            // Setze statische Referenz für Systeme
+            Settings = m_Setting;
+            
+            // Registriere die Systeme zum Ändern der Fahrradweg-Farben
+            // Wir verwenden mehrere Ansätze für maximale Kompatibilität
+            try
+            {
+                // System 1: Material-basiertes System (meistens am effektivsten)
+                updateSystem.UpdateAt<MaterialColorSystem>(SystemUpdatePhase.Rendering);
+                log.Info("MaterialColorSystem registered");
+                
+                // System 2: Entity-basiertes System für Overlay-Farben
+                updateSystem.UpdateAt<BikePathColorSystem>(SystemUpdatePhase.Modification2);
+                log.Info("BikePathColorSystem registered");
+                
+                // System 3: Prefab-Modifier System (läuft einmalig beim Start)
+                updateSystem.UpdateAt<PrefabColorModifierSystem>(SystemUpdatePhase.PrefabUpdate);
+                log.Info("PrefabColorModifierSystem registered");
+            }
+            catch (System.Exception e)
+            {
+                log.Error($"Failed to register systems: {e.Message}");
+            }
+            
+            log.Info("Red bike path mod loaded - Fahrradwege werden jetzt rot dargestellt!");
+            log.Info("Press F9 in-game to reapply colors if needed");
         }
 
         public void OnDispose()
@@ -56,6 +65,11 @@ namespace Red_bike_path
                 m_Setting.UnregisterInOptionsUI();
                 m_Setting = null;
             }
+            
+            // Clear static reference
+            Settings = null;
+            
+            log.Info("Red bike path mod unloaded");
         }
     }
 }

@@ -33,6 +33,9 @@
 		<Reference Include="Colossal.Localization">
 			<Private>false</Private>
 		</Reference>
+		<Reference Include="Colossal.Mathematics">
+			<Private>false</Private>
+		</Reference>
 		<Reference Include="Unity.InputSystem">
 			<Private>false</Private>
 		</Reference>
@@ -69,5 +72,19 @@
 		<None Include="$(ModPropsFile)" Link="Properties\Mod.props" />
 		<None Include="$(ModTargetsFile)" Link="Properties\Mod.targets" />
 	</ItemGroup>
+
+	<!-- Automatisches Kopieren der DLL in den Mods-Ordner direkt nach dem Kompilieren -->
+	<Target Name="CopyToModsFolder" AfterTargets="CoreCompile">
+		<PropertyGroup>
+			<ModsFolder>$(LOCALAPPDATA)\..\LocalLow\Colossal Order\Cities Skylines II\Mods\Red_bike_path</ModsFolder>
+		</PropertyGroup>
+		<MakeDir Directories="$(ModsFolder)" Condition="!Exists('$(ModsFolder)')" />
+		<Copy SourceFiles="$(TargetPath)" DestinationFolder="$(ModsFolder)" SkipUnchangedFiles="false" ContinueOnError="true" Condition="Exists('$(TargetPath)')" />
+		<Copy SourceFiles="$(TargetDir)$(TargetName).pdb" DestinationFolder="$(ModsFolder)" SkipUnchangedFiles="false" ContinueOnError="true" Condition="Exists('$(TargetDir)$(TargetName).pdb')" />
+		<Message Text="========================================" Importance="high" Condition="Exists('$(TargetPath)')" />
+		<Message Text="✅ Mod DLL automatically copied to game!" Importance="high" Condition="Exists('$(TargetPath)')" />
+		<Message Text="   📂 $(ModsFolder)" Importance="high" Condition="Exists('$(TargetPath)')" />
+		<Message Text="========================================" Importance="high" Condition="Exists('$(TargetPath)')" />
+	</Target>
 
 </Project>

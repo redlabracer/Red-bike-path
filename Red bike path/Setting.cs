@@ -1,134 +1,89 @@
 ﻿using System.Collections.Generic;
 using Colossal;
 using Colossal.IO.AssetDatabase;
-using Game.Input;
 using Game.Modding;
 using Game.Settings;
 using Game.UI;
 using Game.UI.Widgets;
+using UnityEngine;
 
 namespace Red_bike_path
 {
     [FileLocation(nameof(Red_bike_path))]
-    [SettingsUIGroupOrder(kButtonGroup, kToggleGroup, kSliderGroup, kDropdownGroup, kKeybindingGroup)]
-    [SettingsUIShowGroupName(kButtonGroup, kToggleGroup, kSliderGroup, kDropdownGroup, kKeybindingGroup)]
-    [SettingsUIKeyboardAction(Mod.kVectorActionName, ActionType.Vector2, usages: new string[] { Usages.kMenuUsage, "TestUsage" }, interactions: new string[] { "UIButton" }, processors: new string[] { "ScaleVector2(x=100,y=100)" })]
-    [SettingsUIKeyboardAction(Mod.kAxisActionName, ActionType.Axis, usages: new string[] { Usages.kMenuUsage, "TestUsage" }, interactions: new string[] { "UIButton" })]
-    [SettingsUIKeyboardAction(Mod.kButtonActionName, ActionType.Button, usages: new string[] { Usages.kMenuUsage, "TestUsage" }, interactions: new string[] { "UIButton" })]
-    [SettingsUIGamepadAction(Mod.kButtonActionName, ActionType.Button, usages: new string[] { Usages.kMenuUsage, "TestUsage" }, interactions: new string[] { "UIButton" })]
-    [SettingsUIMouseAction(Mod.kButtonActionName, ActionType.Button, usages: new string[] { Usages.kMenuUsage, "TestUsage" }, interactions: new string[] { "UIButton" })]
+    [SettingsUIGroupOrder(kMainGroup)]
+    [SettingsUIShowGroupName(kMainGroup)]
     public class Setting : ModSetting
     {
         public const string kSection = "Main";
-
-        public const string kButtonGroup = "Button";
-        public const string kToggleGroup = "Toggle";
-        public const string kSliderGroup = "Slider";
-        public const string kDropdownGroup = "Dropdown";
-        public const string kKeybindingGroup = "KeyBinding";
+        public const string kMainGroup = "Settings";
 
         public Setting(IMod mod) : base(mod)
         {
-
+            SetDefaults();
         }
 
-        [SettingsUISection(kSection, kButtonGroup)]
-        public bool Button { set { Mod.log.Info("Button clicked"); } }
+        [SettingsUISection(kSection, kMainGroup)]
+        public BikePathColorPreset ColorPreset { get; set; }
 
-        [SettingsUIButton]
-        [SettingsUIConfirmation]
-        [SettingsUISection(kSection, kButtonGroup)]
-        public bool ButtonWithConfirmation { set { Mod.log.Info("ButtonWithConfirmation clicked"); } }
+        [SettingsUISlider(min = 0.0f, max = 1.0f, step = 0.01f)]
+        [SettingsUISection(kSection, kMainGroup)]
+        public float ColorIntensity { get; set; }
 
-        [SettingsUISection(kSection, kToggleGroup)]
-        public bool Toggle { get; set; }
+        [SettingsUISection(kSection, kMainGroup)]
+        public bool OnlyBikeLanesNotPedestrian { get; set; }
 
-        [SettingsUISlider(min = 0, max = 100, step = 1, scalarMultiplier = 1, unit = Unit.kDataMegabytes)]
-        [SettingsUISection(kSection, kSliderGroup)]
-        public int IntSlider { get; set; }
+        [SettingsUISection(kSection, kMainGroup)]
+        public bool ColorMixedPaths { get; set; }
 
-        [SettingsUIDropdown(typeof(Setting), nameof(GetIntDropdownItems))]
-        [SettingsUISection(kSection, kDropdownGroup)]
-        public int IntDropdown { get; set; }
-
-        [SettingsUISection(kSection, kDropdownGroup)]
-        public SomeEnum EnumDropdown { get; set; } = SomeEnum.Value1;
-
-        [SettingsUIKeyboardBinding(BindingKeyboard.Q, Mod.kButtonActionName, shift: true)]
-        [SettingsUISection(kSection, kKeybindingGroup)]
-        public ProxyBinding KeyboardBinding { get; set; }
-
-        [SettingsUIMouseBinding(BindingMouse.Forward, Mod.kButtonActionName)]
-        [SettingsUISection(kSection, kKeybindingGroup)]
-        public ProxyBinding MouseBinding { get; set; }
-
-        [SettingsUIGamepadBinding(BindingGamepad.Cross, Mod.kButtonActionName)]
-        [SettingsUISection(kSection, kKeybindingGroup)]
-        public ProxyBinding GamepadBinding { get; set; }
-
-
-        [SettingsUIKeyboardBinding(BindingKeyboard.DownArrow, AxisComponent.Negative, Mod.kAxisActionName, shift: true)]
-        [SettingsUISection(kSection, kKeybindingGroup)]
-        public ProxyBinding FloatBindingNegative { get; set; }
-
-        [SettingsUIKeyboardBinding(BindingKeyboard.UpArrow, AxisComponent.Positive, Mod.kAxisActionName, shift: true)]
-        [SettingsUISection(kSection, kKeybindingGroup)]
-        public ProxyBinding FloatBindingPositive { get; set; }
-
-        [SettingsUIKeyboardBinding(BindingKeyboard.S, Vector2Component.Down, Mod.kVectorActionName, shift: true)]
-        [SettingsUISection(kSection, kKeybindingGroup)]
-        public ProxyBinding Vector2BindingDown { get; set; }
-
-        [SettingsUIKeyboardBinding(BindingKeyboard.W, Vector2Component.Up, Mod.kVectorActionName, shift: true)]
-        [SettingsUISection(kSection, kKeybindingGroup)]
-        public ProxyBinding Vector2BindingUp { get; set; }
-
-        [SettingsUIKeyboardBinding(BindingKeyboard.A, Vector2Component.Left, Mod.kVectorActionName, shift: true)]
-        [SettingsUISection(kSection, kKeybindingGroup)]
-        public ProxyBinding Vector2BindingLeft { get; set; }
-
-        [SettingsUIKeyboardBinding(BindingKeyboard.D, Vector2Component.Right, Mod.kVectorActionName, shift: true)]
-        [SettingsUISection(kSection, kKeybindingGroup)]
-        public ProxyBinding Vector2BindingRight { get; set; }
-
-        [SettingsUISection(kSection, kKeybindingGroup)]
-        public bool ResetBindings
+        public Color GetBikePathColor()
         {
-            set
+            switch (ColorPreset)
             {
-                Mod.log.Info("Reset key bindings");
-                ResetKeyBindings();
+                case BikePathColorPreset.Red:
+                    return new Color(1.0f, 0.0f, 0.0f, 1.0f);
+                case BikePathColorPreset.Blue:
+                    return new Color(0.0f, 0.5f, 1.0f, 1.0f);
+                case BikePathColorPreset.Purple:
+                    return new Color(0.6f, 0.0f, 0.8f, 1.0f);
+                case BikePathColorPreset.Orange:
+                    return new Color(1.0f, 0.5f, 0.0f, 1.0f);
+                case BikePathColorPreset.Yellow:
+                    return new Color(1.0f, 0.9f, 0.0f, 1.0f);
+                case BikePathColorPreset.Pink:
+                    return new Color(1.0f, 0.4f, 0.7f, 1.0f);
+                case BikePathColorPreset.Brown:
+                    return new Color(0.6f, 0.4f, 0.2f, 1.0f);
+                case BikePathColorPreset.White:
+                    return new Color(0.9f, 0.9f, 0.9f, 1.0f);
+                case BikePathColorPreset.Black:
+                    return new Color(0.1f, 0.1f, 0.1f, 1.0f);
+                case BikePathColorPreset.Green:
+                default:
+                    return new Color(0.0f, 0.8f, 0.2f, 1.0f);
             }
-        }
-
-
-        public DropdownItem<int>[] GetIntDropdownItems()
-        {
-            var items = new List<DropdownItem<int>>();
-
-            for (var i = 0; i < 3; i += 1)
-            {
-                items.Add(new DropdownItem<int>()
-                {
-                    value = i,
-                    displayName = i.ToString(),
-                });
-            }
-
-            return items.ToArray();
         }
 
         public override void SetDefaults()
         {
-            throw new System.NotImplementedException();
+            ColorPreset = BikePathColorPreset.Red;
+            ColorIntensity = 1.0f;
+            OnlyBikeLanesNotPedestrian = false;
+            ColorMixedPaths = false; // Standardmäßig gemischte Wege NICHT färben
         }
+    }
 
-        public enum SomeEnum
-        {
-            Value1,
-            Value2,
-            Value3,
-        }
+    public enum BikePathColorPreset
+    {
+        Red,
+        Blue,
+        Green,
+        Purple,
+        Orange,
+        Yellow,
+        Pink,
+        Brown,
+        White,
+        Black
     }
 
     public class LocaleEN : IDictionarySource
@@ -142,79 +97,68 @@ namespace Red_bike_path
         {
             return new Dictionary<string, string>
             {
-                { m_Setting.GetSettingsLocaleID(), "Red_bike_path" },
+                { m_Setting.GetSettingsLocaleID(), "Red Bike Path" },
                 { m_Setting.GetOptionTabLocaleID(Setting.kSection), "Main" },
+                { m_Setting.GetOptionGroupLocaleID(Setting.kMainGroup), "Settings" },
+                { m_Setting.GetOptionLabelLocaleID(nameof(Setting.ColorPreset)), "Color Preset" },
+                { m_Setting.GetOptionDescLocaleID(nameof(Setting.ColorPreset)), "Choose a color preset for bike paths" },
+                { m_Setting.GetOptionLabelLocaleID(nameof(Setting.ColorIntensity)), "Color Intensity" },
+                { m_Setting.GetOptionDescLocaleID(nameof(Setting.ColorIntensity)), "Intensity of the bike path color effect" },
+                { m_Setting.GetOptionLabelLocaleID(nameof(Setting.OnlyBikeLanesNotPedestrian)), "Only Bike Lanes (Skip Mixed Paths)" },
+                { m_Setting.GetOptionDescLocaleID(nameof(Setting.OnlyBikeLanesNotPedestrian)), "If enabled, skips mixed/divided bike+pedestrian paths to avoid coloring pedestrian areas. Note: This may also skip some pure bike paths due to naming." },
+                { m_Setting.GetOptionLabelLocaleID(nameof(Setting.ColorMixedPaths)), "Color Mixed Bike+Pedestrian Paths" },
+                { m_Setting.GetOptionDescLocaleID(nameof(Setting.ColorMixedPaths)), "If enabled, colors mixed paths where bikes and pedestrians share the same surface. Warning: This will also color the pedestrian areas!" },
+                { m_Setting.GetEnumValueLocaleID(BikePathColorPreset.Red), "Red" },
+                { m_Setting.GetEnumValueLocaleID(BikePathColorPreset.Blue), "Blue" },
+                { m_Setting.GetEnumValueLocaleID(BikePathColorPreset.Green), "Green" },
+                { m_Setting.GetEnumValueLocaleID(BikePathColorPreset.Purple), "Purple" },
+                { m_Setting.GetEnumValueLocaleID(BikePathColorPreset.Orange), "Orange" },
+                { m_Setting.GetEnumValueLocaleID(BikePathColorPreset.Yellow), "Yellow" },
+                { m_Setting.GetEnumValueLocaleID(BikePathColorPreset.Pink), "Pink" },
+                { m_Setting.GetEnumValueLocaleID(BikePathColorPreset.Brown), "Brown" },
+                { m_Setting.GetEnumValueLocaleID(BikePathColorPreset.White), "White" },
+                { m_Setting.GetEnumValueLocaleID(BikePathColorPreset.Black), "Black" },
+            };
+        }
 
-                { m_Setting.GetOptionGroupLocaleID(Setting.kButtonGroup), "Buttons" },
-                { m_Setting.GetOptionGroupLocaleID(Setting.kToggleGroup), "Toggle" },
-                { m_Setting.GetOptionGroupLocaleID(Setting.kSliderGroup), "Sliders" },
-                { m_Setting.GetOptionGroupLocaleID(Setting.kDropdownGroup), "Dropdowns" },
-                { m_Setting.GetOptionGroupLocaleID(Setting.kKeybindingGroup), "Key bindings" },
+        public void Unload()
+        {
 
-                { m_Setting.GetOptionLabelLocaleID(nameof(Setting.Button)), "Button" },
-                { m_Setting.GetOptionDescLocaleID(nameof(Setting.Button)), $"Simple single button. It should be bool property with only setter or use [{nameof(SettingsUIButtonAttribute)}] to make button from bool property with setter and getter" },
+        }
+    }
 
-                { m_Setting.GetOptionLabelLocaleID(nameof(Setting.ButtonWithConfirmation)), "Button with confirmation" },
-                { m_Setting.GetOptionDescLocaleID(nameof(Setting.ButtonWithConfirmation)), $"Button can show confirmation message. Use [{nameof(SettingsUIConfirmationAttribute)}]" },
-                { m_Setting.GetOptionWarningLocaleID(nameof(Setting.ButtonWithConfirmation)), "is it confirmation text which you want to show here?" },
-
-                { m_Setting.GetOptionLabelLocaleID(nameof(Setting.Toggle)), "Toggle" },
-                { m_Setting.GetOptionDescLocaleID(nameof(Setting.Toggle)), $"Use bool property with setter and getter to get toggable option" },
-
-                { m_Setting.GetOptionLabelLocaleID(nameof(Setting.IntSlider)), "Int slider" },
-                { m_Setting.GetOptionDescLocaleID(nameof(Setting.IntSlider)), $"Use int property with getter and setter and [{nameof(SettingsUISliderAttribute)}] to get int slider" },
-
-                { m_Setting.GetOptionLabelLocaleID(nameof(Setting.IntDropdown)), "Int dropdown" },
-                { m_Setting.GetOptionDescLocaleID(nameof(Setting.IntDropdown)), $"Use int property with getter and setter and [{nameof(SettingsUIDropdownAttribute)}(typeof(SomeType), nameof(SomeMethod))] to get int dropdown: Method must be static or instance of your setting class with 0 parameters and returns {typeof(DropdownItem<int>).Name}" },
-
-                { m_Setting.GetOptionLabelLocaleID(nameof(Setting.EnumDropdown)), "Simple enum dropdown" },
-                { m_Setting.GetOptionDescLocaleID(nameof(Setting.EnumDropdown)), $"Use any enum property with getter and setter to get enum dropdown" },
-
-                { m_Setting.GetEnumValueLocaleID(Setting.SomeEnum.Value1), "Value 1" },
-                { m_Setting.GetEnumValueLocaleID(Setting.SomeEnum.Value2), "Value 2" },
-                { m_Setting.GetEnumValueLocaleID(Setting.SomeEnum.Value3), "Value 3" },
-
-                { m_Setting.GetOptionLabelLocaleID(nameof(Setting.KeyboardBinding)), "Keyboard binding" },
-                { m_Setting.GetOptionDescLocaleID(nameof(Setting.KeyboardBinding)), $"Keyboard binding of Button input action" },
-
-                { m_Setting.GetOptionLabelLocaleID(nameof(Setting.MouseBinding)), "Mouse binding" },
-                { m_Setting.GetOptionDescLocaleID(nameof(Setting.MouseBinding)), $"Mouse binding of Button input action" },
-
-                { m_Setting.GetOptionLabelLocaleID(nameof(Setting.GamepadBinding)), "Gamepad binding" },
-                { m_Setting.GetOptionDescLocaleID(nameof(Setting.GamepadBinding)), $"Gamepad binding of Button input action" },
-
-                { m_Setting.GetOptionLabelLocaleID(nameof(Setting.FloatBindingNegative)), "Negative binding" },
-                { m_Setting.GetOptionDescLocaleID(nameof(Setting.FloatBindingNegative)), $"Negative component of Axis input action" },
-
-                { m_Setting.GetOptionLabelLocaleID(nameof(Setting.FloatBindingPositive)), "Positive binding" },
-                { m_Setting.GetOptionDescLocaleID(nameof(Setting.FloatBindingPositive)), $"Positive component of Axis input action" },
-
-                { m_Setting.GetOptionLabelLocaleID(nameof(Setting.Vector2BindingDown)), "Keyboard binding down" },
-                { m_Setting.GetOptionDescLocaleID(nameof(Setting.Vector2BindingDown)), $"Down component of Vector input action" },
-
-                { m_Setting.GetOptionLabelLocaleID(nameof(Setting.Vector2BindingUp)), "Keyboard binding up" },
-                { m_Setting.GetOptionDescLocaleID(nameof(Setting.Vector2BindingUp)), $"Up component of Vector input action" },
-
-                { m_Setting.GetOptionLabelLocaleID(nameof(Setting.Vector2BindingLeft)), "Keyboard binding left" },
-                { m_Setting.GetOptionDescLocaleID(nameof(Setting.Vector2BindingLeft)), $"Left component of Vector input action" },
-
-                { m_Setting.GetOptionLabelLocaleID(nameof(Setting.Vector2BindingRight)), "Keyboard binding right" },
-                { m_Setting.GetOptionDescLocaleID(nameof(Setting.Vector2BindingRight)), $"Right component of Vector input action" },
-
-                { m_Setting.GetOptionLabelLocaleID(nameof(Setting.ResetBindings)), "Reset key bindings" },
-                { m_Setting.GetOptionDescLocaleID(nameof(Setting.ResetBindings)), $"Reset all key bindings of the mod" },
-
-                { m_Setting.GetBindingKeyLocaleID(Mod.kButtonActionName), "Button key" },
-
-                { m_Setting.GetBindingKeyLocaleID(Mod.kAxisActionName, AxisComponent.Negative), "Negative key" },
-                { m_Setting.GetBindingKeyLocaleID(Mod.kAxisActionName, AxisComponent.Positive), "Positive key" },
-
-                { m_Setting.GetBindingKeyLocaleID(Mod.kVectorActionName, Vector2Component.Down), "Down key" },
-                { m_Setting.GetBindingKeyLocaleID(Mod.kVectorActionName, Vector2Component.Up), "Up key" },
-                { m_Setting.GetBindingKeyLocaleID(Mod.kVectorActionName, Vector2Component.Left), "Left key" },
-                { m_Setting.GetBindingKeyLocaleID(Mod.kVectorActionName, Vector2Component.Right), "Right key" },
-
-                { m_Setting.GetBindingMapLocaleID(), "Mod settings sample" },
+    public class LocaleDE : IDictionarySource
+    {
+        private readonly Setting m_Setting;
+        public LocaleDE(Setting setting)
+        {
+            m_Setting = setting;
+        }
+        public IEnumerable<KeyValuePair<string, string>> ReadEntries(IList<IDictionaryEntryError> errors, Dictionary<string, int> indexCounts)
+        {
+            return new Dictionary<string, string>
+            {
+                { m_Setting.GetSettingsLocaleID(), "Roter Fahrradweg" },
+                { m_Setting.GetOptionTabLocaleID(Setting.kSection), "Hauptmenü" },
+                { m_Setting.GetOptionGroupLocaleID(Setting.kMainGroup), "Einstellungen" },
+                { m_Setting.GetOptionLabelLocaleID(nameof(Setting.ColorPreset)), "Farbvoreinstellung" },
+                { m_Setting.GetOptionDescLocaleID(nameof(Setting.ColorPreset)), "Wähle eine Farbvoreinstellung für Fahrradwege" },
+                { m_Setting.GetOptionLabelLocaleID(nameof(Setting.ColorIntensity)), "Farbintensität" },
+                { m_Setting.GetOptionDescLocaleID(nameof(Setting.ColorIntensity)), "Intensität des Fahrradweg-Farbeffekts" },
+                { m_Setting.GetOptionLabelLocaleID(nameof(Setting.OnlyBikeLanesNotPedestrian)), "Nur Fahrradspuren (Gemischte Wege überspringen)" },
+                { m_Setting.GetOptionDescLocaleID(nameof(Setting.OnlyBikeLanesNotPedestrian)), "Wenn aktiviert, werden gemischte/geteilte Fahrrad+Fußgänger-Wege übersprungen, um Fußgängerbereiche nicht einzufärben. Hinweis: Dies kann auch einige reine Fahrradwege überspringen." },
+                { m_Setting.GetOptionLabelLocaleID(nameof(Setting.ColorMixedPaths)), "Gemischte Fahrrad+Fußgänger-Wege färben" },
+                { m_Setting.GetOptionDescLocaleID(nameof(Setting.ColorMixedPaths)), "Wenn aktiviert, werden gemischte Wege gefärbt, wo Fahrräder und Fußgänger die gleiche Fläche teilen. Warnung: Dies färbt auch die Fußgängerbereiche!" },
+                { m_Setting.GetEnumValueLocaleID(BikePathColorPreset.Red), "Rot" },
+                { m_Setting.GetEnumValueLocaleID(BikePathColorPreset.Blue), "Blau" },
+                { m_Setting.GetEnumValueLocaleID(BikePathColorPreset.Green), "Grün" },
+                { m_Setting.GetEnumValueLocaleID(BikePathColorPreset.Purple), "Lila" },
+                { m_Setting.GetEnumValueLocaleID(BikePathColorPreset.Orange), "Orange" },
+                { m_Setting.GetEnumValueLocaleID(BikePathColorPreset.Yellow), "Gelb" },
+                { m_Setting.GetEnumValueLocaleID(BikePathColorPreset.Pink), "Rosa" },
+                { m_Setting.GetEnumValueLocaleID(BikePathColorPreset.Brown), "Braun" },
+                { m_Setting.GetEnumValueLocaleID(BikePathColorPreset.White), "Weiß" },
+                { m_Setting.GetEnumValueLocaleID(BikePathColorPreset.Black), "Schwarz" },
             };
         }
 
