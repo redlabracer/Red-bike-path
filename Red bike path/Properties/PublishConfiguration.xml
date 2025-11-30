@@ -124,9 +124,10 @@ Feel free to contribute, fork, or report issues!
 
 	</LongDescription>
 	<!--Thumbnail-->
-	<Thumbnail Value="Properties/Thumbnail.png" />
+	<Thumbnail Value="Properties/Thumbnail.jpeg" />
 	<!--Screenshot, can be set multiple times-->
-	<Screenshot Value="" />
+	<Screenshot Value="Properties\Screenshot 1.png" />
+	<Screenshot Value="Properties\Screenshot 2.png" />
 	<!--Tag, can be set multiple times-->
 	<Tag Value="Code Mod" />
 	<!--Link to the forum post where the mod can be discussed-->
@@ -152,17 +153,9 @@ Feel free to contribute, fork, or report issues!
 - 🎯 Separate controls for mixed paths
 
 ### What's New
-- Complete rewrite of color system
 - Added mixed path detection and control
 - Improved material detection
 - Enhanced logging for troubleshooting
-- Automatic copy to mods folder after build
-
-### Coming Soon
-- More color presets
-- Per-district color customization
-- Better mixed path handling
-- Additional language support
 	</ChangeLog>
 	<!--External link, can be set multiple times. supported types are "discord", "github", "youtube", "twitch", "x", "paypal", "patreon", "buymeacoffee", "kofi", "crowdin", "gitlab", "gofundme"-->
 	<ExternalLink Type="github" Url="https://github.com/redlabracer/Red-bike-path" />
