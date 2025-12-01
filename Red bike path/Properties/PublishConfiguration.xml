@@ -7,59 +7,88 @@
 	<ShortDescription Value="Change bike path and bike lane colors with multiple presets and intensity control. Separate settings for mixed paths and pedestrian areas." />
 	<!--Long description of the mod. Single line or multi line. Supports minimal markdown subset-->
 	<LongDescription>
-# Red Bike Path - Customizable Bike Lane Colors
+# Colored Bike Path (CBP)
 
-Transform your city's cycling infrastructure with customizable bike path colors! This mod allows you to change the surface color of bike paths, bike lanes, and cycle ways from the default green to various colors including red, blue, purple, orange, and more.
+Transform your city's cycling infrastructure with customizable bike path colors! Make your bike lanes stand out with vibrant colors that match your city's unique character.
+
+## ✨ What's New in v2.0
+
+### 🎨 Expanded Color Palette
+Choose from **17 preset colors** including:
+- **Aqua Blue Shades**: Aqua, London Blue (Cycle Superhighway), Cyan, Turquoise
+- **Vibrant Colors**: Red, Green, Lime Green, Blue, Purple, Magenta
+- **Classic Colors**: Orange, Yellow, Pink, Brown, White, Black
+- **Custom**: Full RGB/Hex color picker for unlimited options
+
+### 🎛️ Advanced Color Controls
+New fine-tuning options:
+- **Saturation Control** (0-100%) - From grayscale to full color
+- **Brightness Control** (0-100%) - From dark to bright
+- **Color Intensity** - Overall effect strength
+- Apply to ANY preset for perfect customization
 
 ## Features
 
-### Multiple Color Presets
-- **Red** - High visibility for urban areas
-- **Blue** - Modern and calming aesthetic
-- **Purple** - Unique and distinctive
-- **Orange** - Warm and inviting
-- **Yellow** - Maximum visibility
-- **Pink** - Playful and modern
-- **Brown** - Natural and understated
-- **White** - Clean and minimal
-- **Black** - Sleek and professional
-- **Green** - Return to default
+### Multiple Color Options
+Get London-style aqua blue lanes or choose from 16 other presets. Not satisfied? Create your own with RGB sliders or hex codes!
 
-### Advanced Settings
-- **Color Intensity Slider** - Fine-tune the color strength (0-100%)
-- **Only Bike Lanes Mode** - Skip mixed bike+pedestrian paths to avoid coloring pedestrian areas
-- **Color Mixed Paths Option** - Choose whether to color shared bike/pedestrian surfaces
-- **Separate Pedestrian Control** - Keep pedestrian walkways in their original color
+### Advanced Customization
+Three levels of control:
+1. Quick presets for instant results
+2. Saturation &amp; brightness for fine-tuning
+3. Custom RGB/Hex for unlimited possibilities
 
-### What Gets Colored
-- Dedicated bike lanes on roads
-- Separated bike paths
-- Cycle way surfaces
-- Optional: Mixed bike/pedestrian paths (configurable)
+### Smart Path Detection
+Intelligently identifies bike paths, lanes, and cycleways while avoiding vehicles and buildings
 
-### What Stays Original
-- Pure pedestrian sidewalks (always)
-- Mixed paths (when disabled in settings)
-- Road surfaces
-- Buildings and other infrastructure
+### Flexible Filtering
+- Skip mixed bike+pedestrian paths to keep sidewalks natural
+- Or color everything for maximum visibility
+- Toggle between modes instantly
+
+### Real-Time Updates
+See changes immediately - no restart required!
 
 ## How to Use
 
-1. **Enable the mod** in the game's mod manager
-2. **Load or start a city** - colors apply automatically
-3. **Customize settings** via Options > Mod Settings > Red Bike Path
-   - Choose your preferred color preset
-   - Adjust intensity for subtle or bold effects
-   - Toggle mixed path coloring as desired
-4. **Changes apply in real-time** - no restart needed for color changes!
+### Quick Start
+1. Enable the mod in your mod manager
+2. Load your city
+3. Open mod settings (Options > Mods > Colored Bike Path)
+4. Choose a color preset (try "London Blue" for aqua lanes!)
+5. Adjust saturation/brightness if desired
+6. Changes apply automatically
 
-## Configuration Options
+### Fine-Tuning
+Want the perfect shade?
+1. Pick the closest preset color
+2. Adjust **Saturation** (less = more pastel, more = more vibrant)
+3. Adjust **Brightness** (less = darker, more = lighter)
+4. Tweak **Color Intensity** for overall strength
+
+### Custom Colors
+For complete control:
+1. Select "Custom" preset
+2. Enter a hex code (e.g., #00BFFF for deep sky blue)
+3. Or use RGB sliders (0-255 each)
+4. Add saturation/brightness adjustments
+
+## Settings Explained
 
 ### Color Preset
-Select from 10 different color options to match your city's theme
+Choose from 17 built-in colors or "Custom" for your own. Popular choices:
+- **London Blue** - Matches London's Cycle Superhighways
+- **Aqua** - Bright, eye-catching aqua
+- **Red** - High visibility (default)
+- **Green** - Natural, eco-friendly look
+
+### Advanced Color Controls
+- **Saturation**: How vivid the color is (0=gray, 100=full color)
+- **Brightness**: How light the color is (0=black, 100=full brightness)
+Works with all presets!
 
 ### Color Intensity
-Adjust from 0% (no change) to 100% (full saturation) for perfect customization
+Master control from 0% (no change) to 100% (full effect)
 
 ### Only Bike Lanes (Skip Mixed Paths)
 When enabled, skips mixed bike+pedestrian paths to avoid coloring pedestrian areas. May also skip some pure bike paths due to naming patterns.
@@ -131,7 +160,7 @@ Feel free to contribute, fork, or report issues!
 	<!--Link to the forum post where the mod can be discussed-->
 	<ForumLink Value="https://forum.paradoxplaza.com/forum/threads/colored-bike-path-cbp.1883408/" />
 	<!--Version of the mod-->
-	<ModVersion Value="1.0.0" />
+	<ModVersion Value="2.0.0" />
 	<!--Recommended version of the base game to use the mod-->
 	<GameVersion Value="1.4.*" />
 	<!--Dependency for the mod, can be set multiple times-->
@@ -140,20 +169,34 @@ Feel free to contribute, fork, or report issues!
 	<!--No DLC required-->
 	<!--Change log for new version. Single line or multi line. Supports minimal markdown subset-->
 	<ChangeLog>
-## Version 1.0.0 - Initial Release
+## Version 2.0.0 - Color Palette Expansion &amp; Advanced Controls
 
-### Features
-- 10 color presets for bike paths and lanes
-- Adjustable color intensity (0-100%)
-- Advanced filtering options
-- English and German localization
-- Real-time color updates
-- Separate controls for mixed paths
+### 🎨 New Color Presets
+- **Aqua** - Bright aqua blue
+- **London Blue (Cycle Superhighway)** - Match London's iconic bike lanes!
+- **Cyan** - Pure bright cyan
+- **Turquoise** - Softer turquoise shade
+- **Lime Green** - Vibrant lime green
+- **Magenta** - Bright magenta/hot pink
 
-### What's New
-- Added mixed path detection and control
-- Improved material detection
-- Enhanced logging for troubleshooting
+### ✨ Advanced Color Controls
+- **Saturation Slider** - Control color intensity from grayscale to full color (0-100%)
+- **Brightness Slider** - Adjust brightness from dark to full brightness (0-100%)
+- Works with ALL color presets for complete customization
+
+### 🔧 Improvements
+- Expanded color palette from 11 to 17 preset colors
+- New "Advanced Color Controls" settings section
+- Fine-tune any preset with saturation and brightness
+- Better organization of settings UI
+
+### 📝 What's New
+Now you can:
+- Get that perfect aqua blue like London's Cycle Superhighways
+- Adjust any preset color to match your city's theme
+- Create pastel shades by reducing saturation
+- Make darker or lighter variations with brightness control
+- Still use custom RGB/Hex for unlimited possibilities
 	</ChangeLog>
 	<!--External link, can be set multiple times. supported types are "discord", "github", "youtube", "twitch", "x", "paypal", "patreon", "buymeacoffee", "kofi", "crowdin", "gitlab", "gofundme"-->
 	<ExternalLink Type="github" Url="https://github.com/redlabracer/Red-bike-path" />
