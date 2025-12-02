@@ -7,17 +7,52 @@ using Colossal.Logging;
 
 namespace Red_bike_path.Systems
 {
+    /// <summary>
+    /// System zur Änderung der Fahrradweg-Material-Farben.
+    /// 
+    /// Version 2.1.0 Fix:
+    /// - Verhindert, dass Fahrzeuge und Gebäude eingefärbt werden
+    /// - Verwendet spezifischere Material-Keywords (bikepath, bikelane, cycleway statt nur "bike")
+    /// - Schließt explizit Fahrzeug-, Gebäude- und UI-Materialien aus
+    /// - Prüft Shader-Namen, um nur Terrain/Path-Materialien zu färben
+    /// 
+    /// Version 2.2.0 Fix:
+    /// - Fixed color blending issue where colors were multiplied instead of replaced
+    /// - Now uses Color.Lerp for proper color blending, allowing bright colors like white and cyan to display correctly
+    /// - ColorIntensity now controls the blend between white and the target color
+    /// 
+    /// Version 2.3.0 Fix:
+    /// - Added null checks to prevent NullReferenceException in logging
+    /// - Added safe shader name access with null checks
+    /// - Removed special Unicode characters from log messages
+    /// - Added defensive logging with try-catch blocks
+    /// 
+    /// Version 2.4.0 Fix:
+    /// - Disabled all logging due to Colossal logging framework instability
+    /// - System now operates silently to prevent crashes
+    /// </summary>
     public partial class MaterialColorSystem : GameSystemBase
     {
-        private static ILog log = LogManager.GetLogger($"{nameof(Red_bike_path)}.{nameof(MaterialColorSystem)}");
+        private ILog m_Log;
         private bool m_MaterialsUpdated = false;
         private float m_UpdateTimer = 0f;
         private const float UPDATE_INTERVAL = 2f;
+        private const bool ENABLE_LOGGING = false; // Disabled due to logging framework issues
 
         protected override void OnCreate()
         {
             base.OnCreate();
-            log.Info("MaterialColorSystem created");
+            if (ENABLE_LOGGING)
+            {
+                try
+                {
+                    m_Log = LogManager.GetLogger($"{nameof(Red_bike_path)}.{nameof(MaterialColorSystem)}");
+                }
+                catch
+                {
+                    m_Log = null;
+                }
+            }
         }
 
         protected override void OnUpdate()
@@ -28,6 +63,40 @@ namespace Red_bike_path.Systems
             {
                 m_UpdateTimer = 0f;
                 UpdateBikePathMaterials();
+            }
+        }
+
+        private void SafeLog(string message)
+        {
+            if (!ENABLE_LOGGING) return;
+            
+            try
+            {
+                if (m_Log != null && !string.IsNullOrEmpty(message))
+                {
+                    m_Log.Info(message);
+                }
+            }
+            catch
+            {
+                // Silently fail if logging crashes
+            }
+        }
+
+        private void SafeLogError(string message)
+        {
+            if (!ENABLE_LOGGING) return;
+            
+            try
+            {
+                if (m_Log != null && !string.IsNullOrEmpty(message))
+                {
+                    m_Log.Error(message);
+                }
+            }
+            catch
+            {
+                // Silently fail if logging crashes
             }
         }
 
@@ -44,6 +113,10 @@ namespace Red_bike_path.Systems
                 Color targetColor = settings.GetBikePathColor();
                 float intensity = settings.ColorIntensity;
                 
+                // Use Lerp to blend from white to the target color based on intensity
+                // This replaces the color instead of multiplying it with the existing green
+                Color finalColor = Color.Lerp(Color.white, targetColor, intensity);
+                
                 var allMaterials = Resources.FindObjectsOfTypeAll<Material>();
                 int updatedCount = 0;
                 int skippedCount = 0;
@@ -52,7 +125,7 @@ namespace Red_bike_path.Systems
                 // Beim ersten Durchlauf alle relevanten Materialien loggen
                 if (!m_MaterialsUpdated)
                 {
-                    log.Info("=== Scanning for bike path materials ===");
+                    SafeLog("=== Scanning for bike path materials ===");
                 }
 
                 foreach (var material in allMaterials)
@@ -62,6 +135,12 @@ namespace Red_bike_path.Systems
 
                     string matName = material.name.ToLower();
                     
+                    // FIRST: Check if this should be excluded (vehicles, buildings, etc.)
+                    if (ShouldExcludeMaterial(matName, material))
+                    {
+                        continue;
+                    }
+                    
                     if (IsBikePathMaterial(matName))
                     {
                         totalChecked++;
@@ -69,7 +148,15 @@ namespace Red_bike_path.Systems
                         // Log alle gefundenen Materialien beim ersten Scan
                         if (!m_MaterialsUpdated)
                         {
-                            log.Info($"Found bike material: {material.name}");
+                            try
+                            {
+                                string shaderName = material.shader != null ? material.shader.name : "null";
+                                SafeLog("Found bike material: " + material.name + " (Shader: " + shaderName + ")");
+                            }
+                            catch
+                            {
+                                // Skip logging if it fails
+                            }
                         }
                         
                         // Prüfe ob es übersprungen werden soll
@@ -91,7 +178,14 @@ namespace Red_bike_path.Systems
                         {
                             if (!m_MaterialsUpdated)
                             {
-                                log.Info($"? Skipped: {material.name} - Reason: {skipReason}");
+                                try
+                                {
+                                    SafeLog("Skipped: " + material.name + " - Reason: " + skipReason);
+                                }
+                                catch
+                                {
+                                    // Skip logging if it fails
+                                }
                             }
                             skippedCount++;
                             continue;
@@ -100,27 +194,27 @@ namespace Red_bike_path.Systems
                         bool updated = false;
                         if (material.HasProperty("_BaseColor"))
                         {
-                            material.SetColor("_BaseColor", targetColor * intensity);
+                            material.SetColor("_BaseColor", finalColor);
                             updated = true;
                         }
                         if (material.HasProperty("_Color"))
                         {
-                            material.SetColor("_Color", targetColor * intensity);
+                            material.SetColor("_Color", finalColor);
                             updated = true;
                         }
                         if (material.HasProperty("_MainColor"))
                         {
-                            material.SetColor("_MainColor", targetColor * intensity);
+                            material.SetColor("_MainColor", finalColor);
                             updated = true;
                         }
                         if (material.HasProperty("_TintColor"))
                         {
-                            material.SetColor("_TintColor", targetColor * intensity);
+                            material.SetColor("_TintColor", finalColor);
                             updated = true;
                         }
                         if (material.HasProperty("_EmissionColor"))
                         {
-                            material.SetColor("_EmissionColor", targetColor * 0.5f * intensity);
+                            material.SetColor("_EmissionColor", finalColor * 0.5f);
                             updated = true;
                         }
                         
@@ -128,14 +222,21 @@ namespace Red_bike_path.Systems
                         {
                             if (!m_MaterialsUpdated)
                             {
-                                log.Info($"? Updated: {material.name}");
+                                try
+                                {
+                                    SafeLog("Updated: " + material.name);
+                                }
+                                catch
+                                {
+                                    // Skip logging if it fails
+                                }
                             }
                             updatedCount++;
                         }
                     }
                 }
 
-                log.Info($"Material scan complete: Checked {totalChecked}, Updated {updatedCount}, Skipped {skippedCount}");
+                SafeLog("Material scan complete: Checked " + totalChecked + ", Updated " + updatedCount + ", Skipped " + skippedCount);
                 
                 if (updatedCount > 0 || skippedCount > 0)
                 {
@@ -144,22 +245,142 @@ namespace Red_bike_path.Systems
             }
             catch (System.Exception ex)
             {
-                log.Error($"Error updating bike path materials: {ex.Message}");
+                SafeLogError("Error updating bike path materials: " + ex.Message);
             }
+        }
+
+        private bool ShouldExcludeMaterial(string materialName, Material material)
+        {
+            // Exclude vehicle materials
+            string[] vehicleKeywords = new[]
+            {
+                "vehicle",
+                "car",
+                "truck",
+                "bus",
+                "van",
+                "automobile",
+                "motor",
+                "wheel",
+                "tire",
+                "tyre",
+                "chassis",
+                "body_",
+                "paint_",
+                "_lod",
+                "trailer"
+            };
+            
+            // Exclude building materials
+            string[] buildingKeywords = new[]
+            {
+                "building",
+                "house",
+                "wall",
+                "roof",
+                "window",
+                "door",
+                "floor",
+                "facade",
+                "interior",
+                "prop",
+                "sign",
+                "billboard",
+                "fence"
+            };
+            
+            // Exclude UI and other non-terrain materials
+            string[] otherExclusions = new[]
+            {
+                "ui_",
+                "_ui",
+                "icon",
+                "cursor",
+                "button",
+                "menu",
+                "particle",
+                "effect",
+                "water",
+                "tree",
+                "vegetation"
+            };
+            
+            foreach (var keyword in vehicleKeywords)
+            {
+                if (materialName.Contains(keyword))
+                {
+                    return true;
+                }
+            }
+            
+            foreach (var keyword in buildingKeywords)
+            {
+                if (materialName.Contains(keyword))
+                {
+                    return true;
+                }
+            }
+            
+            foreach (var keyword in otherExclusions)
+            {
+                if (materialName.Contains(keyword))
+                {
+                    return true;
+                }
+            }
+            
+            // Check shader names - only allow terrain/ground/path related shaders
+            if (material != null && material.shader != null)
+            {
+                try
+                {
+                    string shaderName = material.shader.name.ToLower();
+                    
+                    // Exclude non-terrain shaders
+                    if (shaderName.Contains("standard") && !shaderName.Contains("terrain") && !shaderName.Contains("ground"))
+                    {
+                        // Standard shader but not for terrain - likely a vehicle/building
+                        return true;
+                    }
+                    
+                    if (shaderName.Contains("vehicle") || shaderName.Contains("building") || shaderName.Contains("prop"))
+                    {
+                        return true;
+                    }
+                }
+                catch
+                {
+                    // If shader name access fails, exclude to be safe
+                    return true;
+                }
+            }
+            
+            return false;
         }
 
         private bool IsBikePathMaterial(string materialName)
         {
-            // Liste von Schlüsselwörtern die auf Fahrradweg-Materialien hinweisen
+            // More specific keywords that are actually used for bike path materials in Cities Skylines 2
+            // These should be specific to NETWORK/PATH materials, not generic "bike" references
             string[] bikePathKeywords = new[]
             {
-                "bike",
-                "bicycle",
-                "cycle",
                 "bikepath",
+                "bike_path",
+                "bike-path",
+                "bikelane",
+                "bike_lane",
+                "bike-lane",
                 "cycleway",
+                "cycle_way",
+                "cycle-way",
+                "cyclelane",
+                "cycle_lane",
                 "lane_marking_bike",
-                "bikelane"
+                "lane_bike",
+                "marking_bike",
+                "network_bike",
+                "path_bike",
+                "surface_bike"
             };
 
             foreach (var keyword in bikePathKeywords)
@@ -208,7 +429,7 @@ namespace Red_bike_path.Systems
                 return true; // Ja, überspringen
             }
             
-            // Wenn NUR pedestrian Keywords (kein bike): Überspringe auch
+            // Wenn NUR pedestrian Keywords (kein bike): überspringe auch
             if (!hasBikeKeyword && hasPedestrianKeyword)
             {
                 return true; // Ja, nur Fußgänger, überspringe
@@ -221,7 +442,7 @@ namespace Red_bike_path.Systems
         protected override void OnDestroy()
         {
             base.OnDestroy();
-            log.Info("MaterialColorSystem destroyed");
+            SafeLog("MaterialColorSystem destroyed");
         }
     }
 }

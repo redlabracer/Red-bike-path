@@ -6,6 +6,10 @@ Eine Mod für Cities: Skylines 2, die die Farbe des Untergrunds von Fahrradwegen 
 
 ### ?? Vielfältige Farbauswahl
 - **10 Farbvoreinstellungen** zur Auswahl: Rot, Blau, Grün, Lila, Orange, Gelb, Rosa, Braun, Weiß, Schwarz
+- **Benutzerdefinierte Farben** ?? - Vollständige Kontrolle über die Farbe:
+  - ?? **Hex-Farbcode Eingabe** - Gib beliebige HTML/Hex-Farbcodes ein (z.B. #FF0000, #00FF00)
+  - ??? **RGB-Schieberegler** - Feinjustierung mit separaten Rot-, Grün- und Blau-Reglern (0-255)
+  - ?? **Automatische Synchronisation** - Hex-Code und RGB-Werte bleiben synchron
 - **Einstellbare Farbintensität** (0-100%) für subtile oder kräftige Effekte
 - Echtzeit-Farbaktualisierung ohne Neustart
 
@@ -13,17 +17,19 @@ Eine Mod für Cities: Skylines 2, die die Farbe des Untergrunds von Fahrradwegen 
 - **"Nur Fahrradspuren" Modus** - Überspringt gemischte Fahrrad+Fußgänger-Wege
 - **"Gemischte Wege färben" Option** - Separate Kontrolle für gemischte Oberflächen
 - **Intelligente Material-Erkennung** - Unterscheidet zwischen Fahrrad- und Fußgängerbereichen
+- **Präzise Filterung** - Färbt nur Fahrradwege, keine Fahrzeuge oder Gebäude
 
-### ??? Was wird eingefärbt
-- Dedizierte Fahrradspuren auf Straßen ?
-- Getrennte Fahrradwege ?
-- Fahrradweg-Oberflächen ?
+### ?? Was wird eingefärbt
+- Dedizierte Fahrradspuren auf Straßen ??
+- Getrennte Fahrradwege ??
+- Fahrradweg-Oberflächen ??
 - Optional: Gemischte Fahrrad/Fußgänger-Wege (konfigurierbar)
 
-### ?? Was bleibt unverändert
+### ? Was bleibt unverändert
 - Reine Fußgängerwege (immer)
 - Gemischte Wege (wenn in Einstellungen deaktiviert)
 - Straßenoberflächen
+- Fahrzeuge (Autos, Busse, etc.)
 - Gebäude und andere Infrastruktur
 
 ## Installation
@@ -45,10 +51,23 @@ Eine Mod für Cities: Skylines 2, die die Farbe des Untergrunds von Fahrradwegen 
 2. Navigiere zu den Mod-Einstellungen
 3. Wähle "Red Bike Path" / "Roter Fahrradweg"
 4. Passe die folgenden Einstellungen an:
-   - **Color Preset / Farbvoreinstellung**: Wähle aus 10 verschiedenen Farben (Standard: Rot)
-     - Rot, Blau, Grün, Lila, Orange, Gelb, Rosa, Braun, Weiß, Schwarz
+   - **Color Preset / Farbvoreinstellung**: Wähle aus 10 verschiedenen Farben oder 'Custom' für eigene Farben
+     - Rot, Blau, Grün, Lila, Orange, Gelb, Rosa, Braun, Weiß, Schwarz, **Benutzerdefiniert**
+   - **Custom Color (nur bei 'Custom')**: 
+     - **Hex Color Code**: Gib einen Hex-Code ein (z.B. #123456, #FF00AA)
+     - **RGB Sliders**: Nutze die Schieberegler für Rot, Grün und Blau (0-255)
    - **Color Intensity / Farbintensität**: Stelle die Intensität der Farbe ein (0.0 - 1.0)
    - **Only Bike Lanes / Nur Fahrradwege**: Wenn aktiviert, werden nur reine Fahrradwege eingefärbt (geteilte Fußgängerwege bleiben unverändert)
+
+#### Beispiele für Hex-Farbcodes:
+- `#FF0000` - Leuchtend Rot
+- `#00FF00` - Leuchtend Grün  
+- `#0080FF` - Himmelblau
+- `#FF6600` - Orange
+- `#9900FF` - Violett
+- `#FF1493` - Pink/Rosa
+- `#40E0D0` - Türkis
+- `#FFD700` - Gold
 
 ### Funktionsweise
 
@@ -68,6 +87,7 @@ Diese Multi-System-Architektur gewährleistet maximale Kompatibilität mit dem Spi
 
 ### Gelöst:
 - ? Geteilte Fahrrad-/Fußgängerwege: Mit der Option "Nur Fahrradwege" werden geteilte Wege nicht mehr eingefärbt
+- ? Fahrzeuge/Gebäude werden eingefärbt: Verbesserte Material-Filterung verhindert nun, dass Nicht-Fahrradweg-Materialien eingefärbt werden
 
 ## Deinstallation
 
@@ -112,6 +132,27 @@ Dieses Projekt steht unter keiner spezifischen Lizenz. Verwende und modifiziere 
 Entwickelt für Cities: Skylines 2 von Colossal Order.
 
 ## Changelog
+
+### Version 2.3.0
+- **?? Fixed Color Blending Issue**: Bright colors like white and cyan now display correctly
+  - Colors are no longer multiplied with the existing green bike lane color
+  - White (#FFFFFF) now appears as white instead of green
+  - Cyan and light blue colors display accurately without greenish tint
+  - ColorIntensity now properly controls the blend between white and the target color
+  - Fixed issue where colors always gravitated towards green
+
+### Version 2.2.0
+- **?? Benutzerdefinierte Farben**: Vollständige Farbkontrolle mit Hex-Codes und RGB-Schiebereglern
+  - Hex-Farbcode Eingabefeld (z.B. #123456)
+  - Separate RGB-Schieberegler (0-255) für präzise Kontrolle
+  - Automatische Synchronisation zwischen Hex und RGB
+  - Unbegrenzte Farbmöglichkeiten!
+
+### Version 2.1.0
+- **?? Wichtiger Bugfix**: Fahrzeuge und Gebäude werden nicht mehr eingefärbt
+- **Verbesserte Material-Erkennung**: Präzisere Filterung für Fahrradweg-spezifische Materialien
+- **Erweiterte Ausschlüsse**: Automatisches Ausschließen von Fahrzeug-, Gebäude- und UI-Materialien
+- **Shader-basierte Filterung**: Nur Terrain/Path-Shader werden berücksichtigt
 
 ### Version 2.0.0
 - **Farbpalette hinzugefügt**: 10 vordefinierte Farben zur Auswahl

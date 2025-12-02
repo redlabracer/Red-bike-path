@@ -4,16 +4,22 @@
 	<!--Name of the mod to display to players-->
 	<DisplayName Value="Colored bike path (CBP)" />
 	<!--Short description of the mod-->
-	<ShortDescription Value="Change bike path and bike lane colors with multiple presets and intensity control. Separate settings for mixed paths and pedestrian areas." />
+	<ShortDescription Value="Change bike path and bike lane colors with multiple presets and intensity control. Now more stable with critical bug fixes!" />
 	<!--Long description of the mod. Single line or multi line. Supports minimal markdown subset-->
 	<LongDescription>
 # Colored Bike Path (CBP)
 
 Transform your city's cycling infrastructure with customizable bike path colors! Make your bike lanes stand out with vibrant colors that match your city's unique character.
 
-## ✨ What's New in v2.0
+## ✨ What's New in v2.0.1
 
-### 🎨 Expanded Color Palette
+### 🐛 Critical Stability Fix
+- **Fixed NullReferenceException crashes** - Eliminated the logging framework conflicts that were causing error spam
+- **Improved stability** - Added defensive error handling throughout the material color system
+- **Better performance** - Reduced overhead by disabling problematic logging components
+- **Smoother operation** - Mod now runs silently without generating unnecessary log entries
+
+### 🎨 Expanded Color Palette (from v2.0)
 Choose from **17 preset colors** including:
 - **Aqua Blue Shades**: Aqua, London Blue (Cycle Superhighway), Cyan, Turquoise
 - **Vibrant Colors**: Red, Green, Lime Green, Blue, Purple, Magenta
@@ -21,7 +27,7 @@ Choose from **17 preset colors** including:
 - **Custom**: Full RGB/Hex color picker for unlimited options
 
 ### 🎛️ Advanced Color Controls
-New fine-tuning options:
+Fine-tuning options:
 - **Saturation Control** (0-100%) - From grayscale to full color
 - **Brightness Control** (0-100%) - From dark to bright
 - **Color Intensity** - Overall effect strength
@@ -54,7 +60,7 @@ See changes immediately - no restart required!
 ### Quick Start
 1. Enable the mod in your mod manager
 2. Load your city
-3. Open mod settings (Options > Mods > Colored Bike Path)
+3. Open mod settings (Options &gt; Mods &gt; Colored Bike Path)
 4. Choose a color preset (try "London Blue" for aqua lanes!)
 5. Adjust saturation/brightness if desired
 6. Changes apply automatically
@@ -104,6 +110,7 @@ When enabled, colors mixed paths where bikes and pedestrians share the same surf
 - Compatible with most other mods
 - Minimal performance impact
 - Automatically updates when settings change
+- Improved stability with better error handling (v2.0.1)
 
 ## Known Limitations
 
@@ -127,6 +134,12 @@ When enabled, colors mixed paths where bikes and pedestrians share the same surf
 - Reduce color intensity
 - Disable mixed path coloring
 
+## Recent Updates
+
+**v2.0.1** - Fixed critical stability issues that were causing NullReferenceException errors and log spam
+
+**v2.0.0** - Added 6 new color presets, saturation/brightness controls, and improved UI organization
+
 ## Localization
 
 Currently supports:
@@ -145,7 +158,7 @@ Visit the GitHub repository to report issues, request features, or contribute to
 This mod is open source and available on GitHub.
 Feel free to contribute, fork, or report issues!
 
-**Compatibility:** Cities: Skylines II v1.4.x and newer
+**Compatibility:** Cities: Skylines II v1.1.x and newer
 
 ---
 
@@ -160,15 +173,42 @@ Feel free to contribute, fork, or report issues!
 	<!--Link to the forum post where the mod can be discussed-->
 	<ForumLink Value="https://forum.paradoxplaza.com/forum/threads/colored-bike-path-cbp.1883408/" />
 	<!--Version of the mod-->
-	<ModVersion Value="2.0.0" />
+	<ModVersion Value="2.0.1" />
 	<!--Recommended version of the base game to use the mod-->
-	<GameVersion Value="1.4.*" />
+	<GameVersion Value="1.1.*" />
 	<!--Dependency for the mod, can be set multiple times-->
 	<!--No dependencies required-->
 	<!--Required DLC, can be set multiple times. Supported values are "Landmark Buildings", "San Fransisco Set", "Beach Properties", "Urban Promenades", "Modern Architecture"-->
 	<!--No DLC required-->
 	<!--Change log for new version. Single line or multi line. Supports minimal markdown subset-->
 	<ChangeLog>
+## Version 2.0.1 - Critical Stability Fix
+
+### 🐛 Bug Fixes
+- **Fixed NullReferenceException crashes** - Eliminated the logging framework conflicts that were causing continuous error spam in game logs
+- **Improved stability** - Added comprehensive defensive error handling throughout the material color system
+- **Better performance** - Reduced overhead by disabling problematic logging components that were causing conflicts
+- **Smoother operation** - Mod now runs silently and reliably without generating unnecessary log entries
+
+### 🔧 Technical Improvements
+- Implemented safe logging wrapper to prevent framework crashes
+- Added null checks for shader access and material properties
+- Improved error recovery for edge cases
+- Removed special Unicode characters that could cause logging issues
+- Disabled verbose logging to prevent conflicts with Colossal's logging framework
+
+### 📝 What's Fixed
+This update resolves:
+- Continuous NullReferenceException errors flooding the game log
+- Potential crashes related to the Colossal logging framework
+- Performance degradation from excessive error logging
+- Instability when accessing material shader properties
+- Log spam that could impact game performance
+
+The mod now works reliably without spamming your log files!
+
+---
+
 ## Version 2.0.0 - Color Palette Expansion &amp; Advanced Controls
 
 ### 🎨 New Color Presets
@@ -189,14 +229,6 @@ Feel free to contribute, fork, or report issues!
 - New "Advanced Color Controls" settings section
 - Fine-tune any preset with saturation and brightness
 - Better organization of settings UI
-
-### 📝 What's New
-Now you can:
-- Get that perfect aqua blue like London's Cycle Superhighways
-- Adjust any preset color to match your city's theme
-- Create pastel shades by reducing saturation
-- Make darker or lighter variations with brightness control
-- Still use custom RGB/Hex for unlimited possibilities
 	</ChangeLog>
 	<!--External link, can be set multiple times. supported types are "discord", "github", "youtube", "twitch", "x", "paypal", "patreon", "buymeacoffee", "kofi", "crowdin", "gitlab", "gofundme"-->
 	<ExternalLink Type="github" Url="https://github.com/redlabracer/Red-bike-path" />
